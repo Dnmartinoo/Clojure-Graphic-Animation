@@ -1,4 +1,4 @@
-# YABC - Yet Another Battle City
+# TP 2 - Animacion Gráfica
 
 ## Universidad, Facultad y Materia
 - **Universidad:** Universidad de Buenos Aires (UBA)
