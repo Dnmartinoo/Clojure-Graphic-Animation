@@ -7,7 +7,7 @@
 
 ## Docentes y Corrector
 - **Docentes:** [Diego Essaya]
-- **Docente Corrector:** 
+- **Docente Corrector:**
 
 ## Integrantes del Grupo
 - **Martino De Ninis [112827]**
@@ -25,5 +25,5 @@
 
 
 ### Videos:
-- **Agustin:** 
+- **Agustin:**
 - **Martino:** 
