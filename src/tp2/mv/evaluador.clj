@@ -31,6 +31,13 @@
                                    \P (ops/op-pop estado-actual)
                                    \S (ops/op-swap estado-actual)
                                    \R (ops/op-rotar estado-actual)
+                                   ;; --COMANDOS DE ARITMETICA Y BITWISE--
+                                   \+ (ops/op-suma estado-actual)
+                                   \- (ops/op-resta estado-actual)
+                                   \* (ops/op-multi estado-actual)
+                                   \^ (ops/op-xor estado-actual)
+                                   \& (ops/op-and estado-actual)
+                                   \| (ops/op-or estado-actual)
                                    ;; --LOGICA DE DIGITOS--
                                    (let [es-digito (Character/isDigit comando)]
                                      (if es-digito

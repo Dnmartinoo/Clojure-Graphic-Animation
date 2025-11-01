@@ -68,3 +68,41 @@
           nuevo-valor (+ (* tope-actual 10) valor-digito)
           ]
       (assoc estado :ds (cons nuevo-valor resto-pila)))))
+
+
+;; --------------------LOGICA DE ARITMETICA--------------------
+
+(defn- op-binaria [estado f]
+  (let [pila (:ds estado)]
+    (if (< (count pila) 2)
+      estado
+
+      (let [b (first pila)
+            a (second pila)
+            resto (drop 2 pila)
+
+            resultado (f a b)
+
+            nueva-pila (cons resultado resto)]
+        (assoc estado :ds nueva-pila)))))
+
+(defn op-suma [estado]
+
+  (op-binaria estado +))
+
+(defn op-resta [estado]
+  (op-binaria estado -))
+
+(defn op-multi [estado]
+  (op-binaria estado *))
+
+;; --------------------LOGICA BITWISE--------------------
+
+(defn op-xor [estado]
+  (op-binaria estado bit-xor))
+
+(defn op-and [estado]
+  (op-binaria estado bit-and))
+
+(defn op-or [estado]
+  (op-binaria estado bit-or))
