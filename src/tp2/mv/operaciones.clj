@@ -71,7 +71,6 @@
 
 
 ;; --------------------LOGICA DE ARITMETICA--------------------
-
 (defn- op-binaria [estado f]
   (let [pila (:ds estado)]
     (if (< (count pila) 2)
@@ -87,7 +86,6 @@
         (assoc estado :ds nueva-pila)))))
 
 (defn op-suma [estado]
-
   (op-binaria estado +))
 
 (defn op-resta [estado]
@@ -106,3 +104,23 @@
 
 (defn op-or [estado]
   (op-binaria estado bit-or))
+
+;; --------------------LOGICA DE COMPARACION--------------------
+
+(defn op-not [estado]
+  (if-not (empty? (:ds estado))
+    (let [tope (first (:ds estado))
+          resto (rest (:ds estado))
+          resultado (if (zero? tope)1 0)
+          nueva-pila (cons resultado resto)]
+      (assoc estado :ds nueva-pila))
+    estado))
+
+(defn op-igual [estado]
+  (op-binaria estado (fn [a b] (if (= a b) 1 0))))
+
+(defn op-menor [estado]
+  (op-binaria estado (fn [a b] (if (< a b) 1 0))))
+
+(defn op-mayor [estado]
+  (op-binaria estado (fn [a b] (if (> a b) 1 0))))

@@ -38,6 +38,11 @@
                                    \^ (ops/op-xor estado-actual)
                                    \& (ops/op-and estado-actual)
                                    \| (ops/op-or estado-actual)
+                                   ;; --COMANDOS DE COMPARACION--
+                                   \! (ops/op-not estado-actual)
+                                   \= (ops/op-igual estado-actual)
+                                   \< (ops/op-menor estado-actual)
+                                   \> (ops/op-mayor estado-actual)
                                    ;; --LOGICA DE DIGITOS--
                                    (let [es-digito (Character/isDigit comando)]
                                      (if es-digito

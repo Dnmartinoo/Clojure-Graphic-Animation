@@ -129,3 +129,55 @@
           rgb-esperado [0 0 3]]
       (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
   )
+
+(deftest test-mv-comparacion-logica
+
+  (testing "Comando ! (Not): ! en 0"
+    (let [codigo "N0!"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando ! (Not): ! en no-cero"
+    (let [codigo "N5!"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 0]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando = (Igual): Iguales"
+    (let [codigo "N5N5="
+          x 1, y 2, t 3
+          rgb-esperado [0 0 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando = (Igual): Distintos"
+    (let [codigo "N5N4="
+          x 1, y 2, t 3
+          rgb-esperado [0 0 0]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando < (Menor): Verdadero"
+    (let [codigo "N4N5<"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando < (Menor): Falso"
+    (let [codigo "N5N4<"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 0]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando > (Mayor): Verdadero"
+    (let [codigo "N5N4>"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando > (Mayor): Falso"
+    (let [codigo "N4N5>"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 0]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+  )
+
