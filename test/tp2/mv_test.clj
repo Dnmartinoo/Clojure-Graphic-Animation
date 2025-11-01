@@ -15,4 +15,18 @@
     (let [codigo "X"
           x 1, y 2, t 3
           rgb-esperado [0 0 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+;; --- NUEVO TEST 'Y' ---
+  (testing "Comando Y: apila el valor de y"
+    (let [codigo "Y"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 2]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  ;; --- NUEVO TEST 'T' ---
+  (testing "Comando T: apila el valor de t"
+    (let [codigo "T"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 3]]
       (is (= rgb-esperado (mv/evaluar-pixel codigo x y t))))))

@@ -22,6 +22,8 @@
                     comando (get codigo idx)
                     nuevo-estado (case comando
                                    \X (ops/op-apilar-x estado-actual x)
+                                   \Y (ops/op-apilar-y estado-actual y)
+                                   \T (ops/op-apilar-t estado-actual t)
                                    estado-actual
                                    )]
                 (recur (update nuevo-estado :idx inc))))
