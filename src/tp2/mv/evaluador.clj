@@ -20,11 +20,18 @@
               estado-actual
               (let [comando (get codigo idx)
                     nuevo-estado (case comando
+                                   ;; --COMANDOS BASICOS--
                                    \X (ops/op-apilar-x estado-actual x)
                                    \Y (ops/op-apilar-y estado-actual y)
                                    \T (ops/op-apilar-t estado-actual t)
                                    \N (ops/op-apilar-cero estado-actual)
-
+                                   ;; --MANIPULACION DE PILA--
+                                   \C (ops/op-clamp estado-actual)
+                                   \D (ops/op-duplicar estado-actual)
+                                   \P (ops/op-pop estado-actual)
+                                   \S (ops/op-swap estado-actual)
+                                   \R (ops/op-rotar estado-actual)
+                                   ;; --LOGICA DE DIGITOS--
                                    (let [es-digito (Character/isDigit comando)]
                                      (if es-digito
                                        (let [valor-digito (Character/digit comando 10)]
