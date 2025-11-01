@@ -1,4 +1,4 @@
-(ns tp2_anim.eventos.dibujar_render
+(ns tp2.eventos.dibujar_render
   (:import [java.awt Color]
            [java.awt.image BufferedImage]))
 

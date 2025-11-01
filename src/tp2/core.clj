@@ -1,8 +1,8 @@
-(ns tp2_anim.core
+(ns tp2.core
   (:gen-class)
-  (:require [tp2_anim.eventos.observer :as obs]
-            [tp2_anim.interfaz.ventana :as win]
-            [tp2_anim.eventos.scheduler :as sched]))
+  (:require [tp2.eventos.observer :as obs]
+            [tp2.interfaz.ventana :as win]
+            [tp2.eventos.scheduler :as sched]))
 
 (defn -main
   "lein run             → GUI con campo vacío

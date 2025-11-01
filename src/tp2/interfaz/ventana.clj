@@ -1,7 +1,7 @@
-(ns tp2_anim.interfaz.ventana
+(ns tp2.interfaz.ventana
   (:require [seesaw.core :as ui]
-            [tp2_anim.eventos.observer :as obs]
-            [tp2_anim.eventos.scheduler :as sched])
+            [tp2.eventos.observer :as obs]
+            [tp2.eventos.scheduler :as sched])
   (:import [javax.swing ImageIcon SwingUtilities]
            [java.awt Image]))
 

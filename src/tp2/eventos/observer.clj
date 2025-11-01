@@ -1,4 +1,4 @@
-(ns tp2_anim.eventos.observer)
+(ns tp2.eventos.observer)
 
 ;; Crea el hash de eventos
 (defn crear-sujeto []

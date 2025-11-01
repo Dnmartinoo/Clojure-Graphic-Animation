@@ -1,6 +1,6 @@
-(ns tp2_anim.eventos.scheduler
-  (:require [tp2_anim.eventos.observer :as obs]
-            [tp2_anim.eventos.dibujar_render :as mock])
+(ns tp2.eventos.scheduler
+  (:require [tp2.eventos.observer :as obs]
+            [tp2.eventos.dibujar_render :as mock])
   (:import [java.util.concurrent Executors]
            [java.util.concurrent.atomic AtomicBoolean]))
 
