@@ -32,7 +32,7 @@
       (obs/publicar-estado! (:sujeto plan) true)
       ;; TODO: reemplazar mock/imagen-degradado por el render real cuando esté listo
       (let [img (mock/imagen-degradado t)]
-        (obs/publicar-cuadro! (:sujeto plan) t img)
+        (obs/publicar-frame! (:sujeto plan) t img)
         (obs/publicar-tick!  (:sujeto plan) t))
       (catch Exception e
         (obs/publicar-error! (:sujeto plan) t (.getMessage e)))

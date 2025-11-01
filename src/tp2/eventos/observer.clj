@@ -23,7 +23,7 @@
 (defn publicar-tick!   [observer t]
   (notificar! observer {:type :tick :t t}))
 
-(defn publicar-cuadro! [observer t imagen]
+(defn publicar-frame! [observer t imagen]
   (notificar! observer {:type :frame-ready :t t :image imagen}))
 
 (defn publicar-error!  [observer t mensaje]
