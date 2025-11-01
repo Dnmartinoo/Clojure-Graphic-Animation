@@ -51,6 +51,14 @@
 
 
 (deftest test-mv-manipulacion-pila
+
+  (testing "Comando C (Clamp): valor negativo a 0"
+    (let [codigo "N0N5-C"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 0]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+
   (testing "Comando C (Clamp): valor alto a 255"
     (let [codigo "N300C"
           x 1, y 2, t 3
@@ -79,4 +87,45 @@
     (let [codigo "XYTR"
           x 1, y 2, t 3
           rgb-esperado [2 3 1]]
-      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t))))))
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+  )
+
+
+
+(deftest test-mv-aritmetica-logica
+  (testing "Comando + (Suma): N70N50+"
+    (let [codigo "N70N50+"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 120]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando - (Resta): N7N5-"
+    (let [codigo "N7N5-"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 2]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando * (Mult): XY*"
+    (let [codigo "XY*"
+          x 3, y 2, t 0
+          rgb-esperado [0 0 6]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando ^ (XOR): XY^"
+    (let [codigo "XY^"
+          x 1, y 3, t 0
+          rgb-esperado [0 0 2]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando & (AND): XY&"
+    (let [codigo "XY&"
+          x 1, y 3, t 0
+          rgb-esperado [0 0 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando | (OR): XY|"
+    (let [codigo "XY|"
+          x 1, y 3, t 0
+          rgb-esperado [0 0 3]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+  )
