@@ -48,3 +48,35 @@
           x 1, y 2, t 3
           rgb-esperado [0 1 2]]
       (is (= rgb-esperado (mv/evaluar-pixel codigo x y t))))))
+
+
+(deftest test-mv-manipulacion-pila
+  (testing "Comando C (Clamp): valor alto a 255"
+    (let [codigo "N300C"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 255]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando D (Duplicate): N4N5N6D"
+    (let [codigo "N4N5N6D"
+          x 1, y 2, t 3
+          rgb-esperado [5 6 6]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando P (Pop): XYP"
+    (let [codigo "XYP"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando S (Swap): XYS"
+    (let [codigo "XYS"
+          x 1, y 2, t 3
+          rgb-esperado [0 2 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando R (Rotate): XYTR"
+    (let [codigo "XYTR"
+          x 1, y 2, t 3
+          rgb-esperado [2 3 1]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t))))))
