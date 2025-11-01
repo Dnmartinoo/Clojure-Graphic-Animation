@@ -29,4 +29,22 @@
     (let [codigo "T"
           x 1, y 2, t 3
           rgb-esperado [0 0 3]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+  ;; --- NUEVO TEST 'N' ---
+  (testing "Comando N: apila un 0"
+    (let [codigo "N"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 0]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  ;; --- NUEVO TEST 'N' + DÍGITOS ---
+  (testing "Comandos N y dígitos: N12"
+    (let [codigo "N12"
+          x 1, y 2, t 3
+          rgb-esperado [0 0 12]]
+      (is (= rgb-esperado (mv/evaluar-pixel codigo x y t)))))
+  (testing "Comandos N y dígitos: Múltiples números N1N2"
+    (let [codigo "N1N2"
+          x 1, y 2, t 3
+          rgb-esperado [0 1 2]]
       (is (= rgb-esperado (mv/evaluar-pixel codigo x y t))))))

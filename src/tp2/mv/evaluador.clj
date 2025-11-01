@@ -18,13 +18,18 @@
 
             (if (>= idx (count codigo))
               estado-actual
-              (let [
-                    comando (get codigo idx)
+              (let [comando (get codigo idx)
                     nuevo-estado (case comando
                                    \X (ops/op-apilar-x estado-actual x)
                                    \Y (ops/op-apilar-y estado-actual y)
                                    \T (ops/op-apilar-t estado-actual t)
-                                   estado-actual
+                                   \N (ops/op-apilar-cero estado-actual)
+
+                                   (let [es-digito (Character/isDigit comando)]
+                                     (if es-digito
+                                       (let [valor-digito (Character/digit comando 10)]
+                                         (ops/op-digito estado-actual valor-digito))
+                                       estado-actual))
                                    )]
                 (recur (update nuevo-estado :idx inc))))
             ))]
