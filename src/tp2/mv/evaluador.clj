@@ -59,7 +59,7 @@
                                      )))]
               (if (or (:error resultado-op) (:ok-final resultado-op))
                 resultado-op
-                (recur (update-in resultado-op [:ok :idx] inc))
+                (recur resultado-op)
                 ))))]
     (cond
       (:error resultado-final)
