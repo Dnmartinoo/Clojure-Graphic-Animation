@@ -50,6 +50,9 @@
                                  \M (ops/op-modo estado-actual)
                                  \/ (ops/op-division estado-actual)
                                  \% (ops/op-modulo estado-actual)
+                                 ;; --LOGICA DE CORCHETES/CICLOS--
+                                 \[ (ops/op-inicio-ciclo estado-actual codigo)
+                                 \] (ops/op-fin-ciclo estado-actual)
                                  ;; --LOGICA DE DIGITOS--
                                  (let [es-digito (Character/isDigit comando)]
                                    (if es-digito
