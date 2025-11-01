@@ -2,16 +2,16 @@
 
 ;; --------------------COMANDOS BASICOS--------------------
 (defn op-apilar-x [estado x]
-  (assoc estado :ds (cons x (:ds estado))))
+  {:ok (assoc estado :ds (cons x (:ds estado)))})
 
 (defn op-apilar-y [estado y]
-  (assoc estado :ds (cons y (:ds estado))))
+  {:ok (assoc estado :ds (cons y (:ds estado)))})
 
 (defn op-apilar-t [estado t]
-  (assoc estado :ds (cons t (:ds estado))))
+  {:ok (assoc estado :ds (cons t (:ds estado)))})
 
 (defn op-apilar-cero [estado]
-  (assoc estado :ds (cons 0 (:ds estado))))
+  {:ok (assoc estado :ds (cons 0 (:ds estado)))})
 
 
 ;; --------------------MANIPULACION DE PILA--------------------
@@ -20,70 +20,68 @@
     (let [tope (first (:ds estado))
           resto (rest (:ds estado))
           valor-clampeado (min 255 (max 0 tope))]
-      (assoc estado :ds (cons valor-clampeado resto)))
-    estado))
+      {:ok (assoc estado :ds (cons valor-clampeado resto))})
+    {:error "Pila vacia"}))
 
 
 (defn op-duplicar [estado]
   (if-not (empty? (:ds estado))
     (let [tope (first (:ds estado))]
-      (assoc estado :ds (cons tope (:ds estado))))
-    estado))
+      {:ok (assoc estado :ds (cons tope (:ds estado)))})
+    {:error "Pila vacia"}))
 
 
 (defn op-pop [estado]
   (if-not (empty? (:ds estado))
-    (assoc estado :ds (rest (:ds estado)))
-    estado))
+    {:ok (assoc estado :ds (rest (:ds estado)))}
+    {:error "Pila vacia"}))
 
 
 (defn op-swap [estado]
   (let [pila (:ds estado)]
     (if (< (count pila) 2)
-      estado
+      {:error "Pila con operandos insuficientes"}
       (let [tope (first pila)
             segundo (second pila)
             resto (drop 2 pila)
             nueva-pila (cons segundo (cons tope resto))]
-        (assoc estado :ds nueva-pila)))))
+        {:ok (assoc estado :ds nueva-pila)}))))
 
 
 (defn op-rotar [estado]
   (let [pila (:ds estado)]
     (if (< (count pila) 3)
-      estado
+      {:error "Pila con operandos insuficientes"}
       (let [c (first pila)
             b (second pila)
             a (nth pila 2)
             resto (drop 3 pila)
             nueva-pila (cons a (cons c (cons b resto)))]
-        (assoc estado :ds nueva-pila)))))
+        {:ok (assoc estado :ds nueva-pila)}))))
 
 ;; --------------------LOGICA DE DIGITOS--------------------
 (defn op-digito [estado valor-digito]
   (if (empty? (:ds estado))
-    estado
+    {:error "Pila vacia para operacion de digito"}
     (let [tope-actual (first (:ds estado))
           resto-pila (rest (:ds estado))
           nuevo-valor (+ (* tope-actual 10) valor-digito)
           ]
-      (assoc estado :ds (cons nuevo-valor resto-pila)))))
+      {:ok (assoc estado :ds (cons nuevo-valor resto-pila))})))
 
 
 ;; --------------------LOGICA DE ARITMETICA--------------------
 (defn- op-binaria [estado f]
   (let [pila (:ds estado)]
     (if (< (count pila) 2)
-      estado
+      {:error "Pila con operandos insuficientes"}
 
       (let [b (first pila)
             a (second pila)
             resto (drop 2 pila)
-
             resultado (f a b)
-
             nueva-pila (cons resultado resto)]
-        (assoc estado :ds nueva-pila)))))
+        {:ok (assoc estado :ds nueva-pila)}))))
 
 (defn op-suma [estado]
   (op-binaria estado +))
@@ -111,10 +109,10 @@
   (if-not (empty? (:ds estado))
     (let [tope (first (:ds estado))
           resto (rest (:ds estado))
-          resultado (if (zero? tope)1 0)
+          resultado (if (zero? tope) 1 0)
           nueva-pila (cons resultado resto)]
-      (assoc estado :ds nueva-pila))
-    estado))
+      {:ok (assoc estado :ds nueva-pila)})
+    {:error "Pila vacia"}))
 
 (defn op-igual [estado]
   (op-binaria estado (fn [a b] (if (= a b) 1 0))))
