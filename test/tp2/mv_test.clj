@@ -182,3 +182,47 @@
           resultado-esperado {:ok [0 0 0]}]
       (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
   )
+
+(deftest test-mv-division-modo
+  (testing "Comando M (Modo): Cambia M"
+    (let [codigo "MN4N2/"
+          x 1, y 2, t 3
+          resultado-esperado {:ok [0 0 2]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando / (Div): Normal"
+    (let [codigo "N4N2/"
+          x 1, y 2, t 3
+          resultado-esperado {:ok [0 0 2]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando % (Mod): Normal"
+    (let [codigo "N7N5%"
+          x 1, y 2, t 3
+          resultado-esperado {:ok [0 0 2]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando % (Mod): Caso TP Euclidiano"
+    (let [codigo "NN8-N5%"
+          x 1, y 2, t 3
+          resultado-esperado {:ok [0 0 2]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando / (Div): Error M=0"
+    (let [codigo "N5N0/"
+          x 1, y 2, t 3
+          resultado-esperado {:error "Division por cero"}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando / (Div): M=1 (Negro)"
+    (let [codigo "MN5N0/"
+          x 1, y 2, t 3
+          resultado-esperado {:ok [0 0 0]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Comando / (Div): M=2 (Rojo)"
+    (let [codigo "MMN5N0/"
+          x 1, y 2, t 3
+          resultado-esperado {:ok [255 0 0]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+  )

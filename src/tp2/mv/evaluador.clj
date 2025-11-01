@@ -15,6 +15,7 @@
         (loop [res {:ok estado/estado-inicial}]
 
           (if (or (:error res)
+                  (:ok-final res)
                   (>= (:idx (:ok res)) (count codigo)))
 
             res
@@ -45,6 +46,10 @@
                                  \= (ops/op-igual estado-actual)
                                  \< (ops/op-menor estado-actual)
                                  \> (ops/op-mayor estado-actual)
+                                 ;; --COMANDOS DE MODULO--
+                                 \M (ops/op-modo estado-actual)
+                                 \/ (ops/op-division estado-actual)
+                                 \% (ops/op-modulo estado-actual)
                                  ;; --LOGICA DE DIGITOS--
                                  (let [es-digito (Character/isDigit comando)]
                                    (if es-digito
@@ -52,11 +57,15 @@
                                        (ops/op-digito estado-actual valor-digito))
                                      {:error (str "Comando desconocido: " comando)}
                                      )))]
-              (if (:error resultado-op)
+              (if (or (:error resultado-op) (:ok-final resultado-op))
                 resultado-op
                 (recur (update-in resultado-op [:ok :idx] inc))
                 ))))]
-    (if-let [error (:error resultado-final)]
-      {:error error}
+    (cond
+      (:error resultado-final)
+      resultado-final
+      (:ok-final resultado-final)
+      {:ok (:ok-final resultado-final)}
+      :else
       {:ok (obtener-rgb-desde-estado (:ok resultado-final))}
       )))
