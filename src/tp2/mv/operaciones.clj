@@ -1,4 +1,5 @@
-(ns tp2.mv.operaciones)
+(ns tp2.mv.operaciones
+  (:require [tp2.mv.saltos :as saltos]))
 
 ;; --------------------COMANDOS BASICOS--------------------
 (defn op-apilar-x [estado x]
@@ -155,3 +156,39 @@
 
 (defn op-modulo [estado]
   (op-division-modulo estado (fn [a b] (mod (rem a b) (abs b)))))
+
+;; --------------------LOGICA DE CICLOS--------------------
+
+(defn op-inicio-ciclo [estado codigo]
+  (if (empty? (:ds estado))
+    {:error "Pila vacia para '['"}
+    (let [a (first (:ds estado))
+          resto-ds (rest (:ds estado))
+          idx-actual (:idx estado)]
+
+      (if-let [idx-fin (saltos/encontrar-corchete codigo idx-actual)]
+        (if (<= a 0)
+          (let [nuevo-estado (assoc estado :ds resto-ds :idx (inc idx-fin))]
+            {:ok nuevo-estado})
+          (let [idx-inicio-bucle (inc idx-actual)
+                nueva-ls (cons [a idx-inicio-bucle] (:ls estado))
+                nuevo-estado (assoc estado :ds resto-ds :ls nueva-ls)]
+            {:ok (update nuevo-estado :idx inc)}))
+        {:error "No se encontro ']' correspondiente"}
+        ))))
+
+(defn op-fin-ciclo [estado]
+  (if (empty? (:ls estado))
+    {:error "Comando ']' sin un '[' correspondiente"}
+    (let [[contador idx-inicio-bucle] (first (:ls estado))
+          resto-ls (rest (:ls estado))
+          contador-nuevo (dec contador)]
+      (if (> contador-nuevo 0)
+        (let [nueva-ls (cons [contador-nuevo idx-inicio-bucle] resto-ls)
+              nuevo-estado (assoc estado :ls nueva-ls)]
+          {:ok (assoc nuevo-estado :idx idx-inicio-bucle)})
+        (let [nuevo-estado (assoc estado :ls resto-ls)]
+          {:ok (update nuevo-estado :idx inc)})
+        ))))
+
+

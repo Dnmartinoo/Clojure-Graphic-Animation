@@ -226,3 +226,37 @@
           resultado-esperado {:ok [255 0 0]}]
       (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
   )
+
+(deftest test-mv-ciclos
+
+  (testing "Ciclo: Salta (contador 0)"
+    (let [codigo "XN0[N1+]"
+          x 1, y 2, t 3
+          ;; Pila: [1]
+          resultado-esperado {:ok [0 0 1]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Ciclo: Ejecuta 1 vez (contador 1)"
+    (let [codigo "XN1[N1+]"
+          x 1, y 2, t 3
+          resultado-esperado {:ok [0 0 2]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Ciclo: Anidado (N0N2[N3[N1+]])"
+    (let [codigo "N0N2[N3[N1+]]"
+          x 1, y 2, t 3
+          resultado-esperado {:ok [0 0 6]}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Ciclo: Error ']' sin '['"
+    (let [codigo "N1]"
+          x 1, y 2, t 3
+          resultado-esperado {:error "Comando ']' sin un '[' correspondiente"}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+
+  (testing "Ciclo: Error '[' sin ']'"
+    (let [codigo "N1["
+          x 1, y 2, t 3
+          resultado-esperado {:error "No se encontro ']' correspondiente"}]
+      (is (= resultado-esperado (mv/evaluar-pixel codigo x y t)))))
+  )
