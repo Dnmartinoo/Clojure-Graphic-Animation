@@ -31,7 +31,7 @@
       (obs/publicar-estado! (:sujeto plan) true)
       (let [codigo @(:codigo-actual plan)
             img (render/generar-cuadro codigo t)]
-        (obs/publicar-cuadro! (:sujeto plan) t img)
+        (obs/publicar-frame! (:sujeto plan) t img)
         (obs/publicar-tick!  (:sujeto plan) t))
       (catch Exception e
         (obs/publicar-error! (:sujeto plan) t (.getMessage e)))
