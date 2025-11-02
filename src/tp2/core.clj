@@ -8,7 +8,7 @@
   "lein run             → GUI con campo vacío
    lein run \"<codigo>\" → GUI con el TextField precargado"
   [& args]
-  (let [sujeto (obs/crear-sujeto)
+  (let [sujeto (obs/crear-observer)
         app    (win/iniciar! sujeto)]
     (when-let [codigo (first args)]
       (sched/establecer-scheduler! (:scheduler app) codigo))))
