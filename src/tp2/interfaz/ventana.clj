@@ -20,7 +20,6 @@
   ^Image [^Image img ^long w ^long h]
   (.getScaledInstance img w h Image/SCALE_SMOOTH))
 
-;; Pospuesto (debounce) simple para el TextField
 (def ^:private tarea-pospuesta (atom nil))
 
 (defn- posponer!
@@ -40,7 +39,7 @@
   (let [ui-estado (atom {:t 0 :error nil :ocupado? false :ultima-img nil})
         plan      (sched/crear-scheduler sujeto 100)
 
-        tf-codigo (ui/text :columns 56 :text "")
+        tf-codigo (ui/text :columns 0 :text "")
         lbl-t     (ui/label :text "t = 0")
         lbl-err   (ui/label :text "" :foreground :red)
         img-lbl   (preferido (ui/label :icon nil) 512 512)
@@ -80,7 +79,6 @@
 
                 nil))]
 
-      ;; Suscripción (garantizamos actualizar en el EDT)
       (obs/suscribir! sujeto :ui
                       (fn [ev]
                         (if (SwingUtilities/isEventDispatchThread)
@@ -88,10 +86,9 @@
                           (SwingUtilities/invokeLater #(al-evento ev))))))
 
     ;; ------------ UI → Scheduler ------------
-    ;; Posponer 300ms: no mandamos establecer-scheduler! por cada tecla
     (ui/listen tf-codigo :key-released
                (fn [_]
-                 (posponer! 300 #(sched/establecer-scheduler! plan (ui/text tf-codigo)))))
+                 (posponer! 10 #(sched/establecer-scheduler! plan (ui/text tf-codigo)))))
 
     ;; ------------ Mostrar y arrancar ------------
     (ui/show! frame)
