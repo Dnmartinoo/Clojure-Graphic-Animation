@@ -46,3 +46,23 @@
       (is (contains? resultado :error))
       (is (= "Pila vacia" (:error resultado)))))
   )
+
+(deftest test-render-adaptador-publico
+  (testing "El adaptador devuelve la IMAGEN en caso de éxito"
+    (let [codigo "N0N0N255"
+          t 0
+          resultado (render/generar-cuadro codigo t)]
+      (is (not (map? resultado)) "No debe ser un mapa")
+      (is (instance? BufferedImage resultado) "Debe ser un BufferedImage")
+      (is (= color-azul-int (.getRGB resultado 0 0))))))
+
+(testing "El adaptador LANZA UNA EXCEPCIÓN en caso de error"
+  (let [codigo "P"
+        t 0]
+    (is (thrown? Exception (render/generar-cuadro codigo t)))
+    (try
+      (render/generar-cuadro codigo t)
+      (catch Exception e
+        (is (= "Pila vacia" (.getMessage e)))))))
+
+

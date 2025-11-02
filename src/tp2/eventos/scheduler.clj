@@ -1,15 +1,13 @@
 (ns tp2.eventos.scheduler
   (:require [tp2.eventos.observer :as obs]
-            [tp2.eventos.dibujar_render :as mock])
+            [tp2.runtime.render :as render])
   (:import [java.util.concurrent Executors]
            [java.util.concurrent.atomic AtomicBoolean]))
 
-;; Pool de hilos para renderizar sin bloquear la UI
 (defonce ^:private EJECUTOR
          (Executors/newFixedThreadPool
            (.availableProcessors (Runtime/getRuntime))))
 
-;; Estado del scheduler de animación
 (defrecord Scheduler [sujeto intervalo-ms corriendo? codigo-actual])
 
 (defn crear-scheduler
@@ -24,15 +22,16 @@
   (reset! (:codigo-actual plan) (or codigo ""))
   (obs/notificar! (:sujeto plan) {:type :code-changed :code @(:codigo-actual plan)}))
 
+
 (defn- tarea-render-cuadro
   "Devuelve una Runnable que renderiza el cuadro t y publica eventos."
   [^Scheduler plan t]
   (fn []
     (try
       (obs/publicar-estado! (:sujeto plan) true)
-      ;; TODO: reemplazar mock/imagen-degradado por el render real cuando esté listo
-      (let [img (mock/imagen-degradado t)]
-        (obs/publicar-frame! (:sujeto plan) t img)
+      (let [codigo @(:codigo-actual plan)
+            img (render/generar-cuadro codigo t)]
+        (obs/publicar-cuadro! (:sujeto plan) t img)
         (obs/publicar-tick!  (:sujeto plan) t))
       (catch Exception e
         (obs/publicar-error! (:sujeto plan) t (.getMessage e)))

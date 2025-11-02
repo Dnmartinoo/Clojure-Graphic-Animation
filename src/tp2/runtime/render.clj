@@ -33,3 +33,11 @@
             {:ok imagen}))]
 
     resultado-loop))
+
+
+(defn generar-cuadro [codigo t]
+  (let [resultado-interno (frame->imagen-interna codigo t)]
+    (if-let [error (:error resultado-interno)]
+      (throw (Exception. error))
+      (:ok resultado-interno)
+      )))
