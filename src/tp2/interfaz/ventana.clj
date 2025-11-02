@@ -31,6 +31,9 @@
             (Thread/sleep ms)
             (f))))
 
+;; -------------------------
+;; Ventana principal
+;; -------------------------
 
 (defn iniciar!
   [sujeto]
@@ -41,7 +44,6 @@
         lbl-t     (ui/label :text "t = 0")
         lbl-err   (ui/label :text "" :foreground :red)
         img-lbl   (preferido (ui/label :icon nil) 512 512)
-        btn-play  (ui/button :text "Pausa")
 
         frame     (ui/frame
                     :title "TP2 - Animación"
@@ -49,10 +51,10 @@
                     :resizable? false
                     :content (ui/border-panel
                                :north  (ui/vertical-panel :items [tf-codigo lbl-t lbl-err])
-                               :center (ui/flow-panel :items [img-lbl])
-                               :south  (ui/flow-panel  :items [btn-play]))
-                    :minimum-size [560 :by 640])]
+                               :center (ui/flow-panel :items [img-lbl]))
+                    :minimum-size [512 :by 512])]
 
+    ;; ------------ Observer → UI ------------
     (letfn [(al-evento [ev]
               (case (:type ev)
                 :tick
@@ -71,34 +73,27 @@
                 :error
                 (do
                   (swap! ui-estado assoc :error (:message ev))
-                  (ui/config! lbl-err :text (str "Error: " (:message ev)))
-                  (when (.get (:corriendo? plan))
-                    (sched/detener! plan)
-                    (ui/config! btn-play :text "Play")))
+                  (ui/config! lbl-err :text (str "Error: " (:message ev))))
 
                 :status
-                (do
-                  (swap! ui-estado assoc :ocupado? (:busy? ev))
-                  (ui/config! btn-play :enabled? (not (:busy? ev))))
+                (swap! ui-estado assoc :ocupado? (:busy? ev))
 
                 nil))]
 
+      ;; Suscripción (garantizamos actualizar en el EDT)
       (obs/suscribir! sujeto :ui
                       (fn [ev]
                         (if (SwingUtilities/isEventDispatchThread)
                           (al-evento ev)
                           (SwingUtilities/invokeLater #(al-evento ev))))))
 
+    ;; ------------ UI → Scheduler ------------
+    ;; Posponer 300ms: no mandamos establecer-scheduler! por cada tecla
     (ui/listen tf-codigo :key-released
                (fn [_]
                  (posponer! 300 #(sched/establecer-scheduler! plan (ui/text tf-codigo)))))
 
-    (ui/listen btn-play :action
-               (fn [_]
-                 (if (.get (:corriendo? plan))
-                   (do (sched/detener! plan) (ui/config! btn-play :text "Play"))
-                   (do (sched/iniciar!  plan) (ui/config! btn-play :text "Pausa")))))
-
+    ;; ------------ Mostrar y arrancar ------------
     (ui/show! frame)
     (sched/iniciar! plan)
     {:frame frame :scheduler plan}))
