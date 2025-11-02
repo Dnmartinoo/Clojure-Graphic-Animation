@@ -4,54 +4,59 @@
   (:import [java.util.concurrent Executors]
            [java.util.concurrent.atomic AtomicBoolean]))
 
-;; Pool de hilos para renderizar sin bloquear la UI
 (defonce ^:private EJECUTOR
          (Executors/newFixedThreadPool
            (.availableProcessors (Runtime/getRuntime))))
 
-;; Estado del scheduler de animación
-(defrecord Scheduler [sujeto intervalo-ms corriendo? codigo-actual])
+(defrecord Scheduler [sujeto intervalo-ms corriendo? codigo-actual version])
 
 (defn crear-scheduler
   "Crea un Scheduler con un intervalo (ms) entre cuadros. Por defecto ~10 FPS (100 ms)."
   ([sujeto] (crear-scheduler sujeto 100))
   ([sujeto intervalo-ms]
-   (->Scheduler sujeto intervalo-ms (AtomicBoolean. false) (atom ""))))
-
-(defn establecer-scheduler!
-  "Actualiza el código fuente a usar por el render. Notifica el cambio."
-  [^Scheduler plan codigo]
-  (reset! (:codigo-actual plan) (or codigo ""))
-  (obs/notificar! (:sujeto plan) {:type :code-changed :code @(:codigo-actual plan)}))
-
+   (->Scheduler sujeto intervalo-ms (AtomicBoolean. false) (atom "") (atom 0))))
 
 (defn- tarea-render-cuadro
-  "Devuelve una Runnable que renderiza el cuadro t y publica eventos."
-  [^Scheduler plan t]
+  [^Scheduler plan t ver codigo-snapshot]
   (fn []
+    (when (= ver @(:version plan))
+      (obs/publicar-estado! (:sujeto plan) true))
     (try
-      (obs/publicar-estado! (:sujeto plan) true)
-      (let [codigo @(:codigo-actual plan)
-            img (render/generar-cuadro codigo t)]
-        (obs/publicar-frame! (:sujeto plan) t img)
-        (obs/publicar-tick!  (:sujeto plan) t))
+      (let [img (render/generar-cuadro codigo-snapshot t)]
+        (when (= ver @(:version plan))
+          (obs/publicar-frame! (:sujeto plan) t img)
+          (obs/publicar-tick!  (:sujeto plan) t)))
       (catch Exception e
-        (obs/publicar-error! (:sujeto plan) t (.getMessage e)))
+        (when (= ver @(:version plan))
+          (obs/publicar-error! (:sujeto plan) t (.getMessage e))))
       (finally
-        (obs/publicar-estado! (:sujeto plan) false)))))
+        (when (= ver @(:version plan))
+          (obs/publicar-estado! (:sujeto plan) false))))))
 
 (defn iniciar!
-  "Comienza el loop de animación en background. No bloquea la UI."
+  "Comienza el loop de animación."
   [^Scheduler plan]
   (when (.compareAndSet (:corriendo? plan) false true)
     (future
-      (loop [t 0]
-        (when (.get (:corriendo? plan))
-          (.submit EJECUTOR ^Runnable (tarea-render-cuadro plan t))
-          (Thread/sleep (:intervalo-ms plan))
-          (recur (mod (inc t) 256)))))))
+      (let [ver @(:version plan)]                    ;; congelo versión para este run
+        (loop [t 0]
+          (when (.get (:corriendo? plan))
+            (let [codigo-snapshot @(:codigo-actual plan)]
+              (.submit EJECUTOR ^Runnable
+                       (tarea-render-cuadro plan t ver codigo-snapshot)))
+            (Thread/sleep (:intervalo-ms plan))
+            (recur (mod (inc t) 256))))))))
 
 (defn detener!
   "Detiene el loop de animación."
   [^Scheduler plan]
   (.set (:corriendo? plan) false))
+
+(defn establecer-scheduler!
+  [^Scheduler plan codigo]
+  (reset! (:codigo-actual plan) (or codigo ""))
+  (swap!  (:version plan) inc)
+  (obs/notificar! (:sujeto plan) {:type :code-changed :code @(:codigo-actual plan)})
+  (when (.get (:corriendo? plan))
+    (detener! plan)
+    (iniciar!  plan)))
