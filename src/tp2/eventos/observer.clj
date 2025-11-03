@@ -4,15 +4,9 @@
 (defn crear-observer []
   {:observadores (atom {})})
 
-;; Crear observador
-(defn suscribir! [observer id f]
+(defn registrar! [observer id f]
   (swap! (:observadores observer) assoc id f))
 
-;; Quitar observador por id
-(defn desuscribir! [observer id]
-  (swap! (:observadores observer) dissoc id))
-
-;; Notifica un evento a todos los observadores
 (defn notificar! [observer evento]
   (doseq [[_ f] @(:observadores observer)]
     (try
