@@ -1,18 +1,24 @@
 (ns tp2.mv.operaciones
   (:require [tp2.mv.saltos :as saltos]))
 
+
+(defn- apilar [estado valor]
+  (if (< (count (:ds estado)) 8)
+    {:ok (update (assoc estado :ds (cons valor (:ds estado))) :idx inc)}
+    {:error "Pila de datos llena"}))
+
 ;; --------------------COMANDOS BASICOS--------------------
 (defn op-apilar-x [estado x]
-  {:ok (update (assoc estado :ds (cons x (:ds estado))) :idx inc)})
+  (apilar estado x))
 
 (defn op-apilar-y [estado y]
-  {:ok (update (assoc estado :ds (cons y (:ds estado))) :idx inc)})
+  (apilar estado y))
 
 (defn op-apilar-t [estado t]
-  {:ok (update (assoc estado :ds (cons t (:ds estado))) :idx inc)})
+  (apilar estado t))
 
 (defn op-apilar-cero [estado]
-  {:ok (update (assoc estado :ds (cons 0 (:ds estado))) :idx inc)})
+  (apilar estado 0))
 
 
 ;; --------------------MANIPULACION DE PILA--------------------
@@ -28,7 +34,7 @@
 (defn op-duplicar [estado]
   (if-not (empty? (:ds estado))
     (let [tope (first (:ds estado))]
-      {:ok (update (assoc estado :ds (cons tope (:ds estado))) :idx inc)})
+       (apilar estado tope))
     {:error "Pila vacia"}))
 
 
@@ -76,13 +82,13 @@
   (let [pila (:ds estado)]
     (if (< (count pila) 2)
       {:error "Pila con operandos insuficientes"}
-
       (let [b (first pila)
             a (second pila)
             resto (drop 2 pila)
             resultado (f a b)
-            nueva-pila (cons resultado resto)]
-        {:ok (update (assoc estado :ds nueva-pila) :idx inc)})))) ; <--- CAMBIO CLAVE
+            nueva-pila (cons resultado resto)
+            nuevo-estado (assoc estado :ds nueva-pila)]
+        {:ok (update nuevo-estado :idx inc)}))))
 
 (defn op-suma [estado]
   (op-binaria estado +))
@@ -160,24 +166,26 @@
 ;; --------------------LOGICA DE CICLOS--------------------
 
 (defn op-inicio-ciclo [estado codigo]
+  "Comando '['. Revisa contador, validez y límite de pila LS."
   (if (empty? (:ds estado))
     {:error "Pila vacia para '['"}
     (let [a (first (:ds estado))
           resto-ds (rest (:ds estado))
           idx-actual (:idx estado)]
-
       (if-let [idx-fin (saltos/encontrar-corchete codigo idx-actual)]
         (if (<= a 0)
           (let [nuevo-estado (assoc estado :ds resto-ds :idx (inc idx-fin))]
             {:ok nuevo-estado})
-          (let [idx-inicio-bucle (inc idx-actual)
-                nueva-ls (cons [a idx-inicio-bucle] (:ls estado))
-                nuevo-estado (assoc estado :ds resto-ds :ls nueva-ls)]
-            {:ok (update nuevo-estado :idx inc)}))
-        {:error "No se encontro ']' correspondiente"}
-        ))))
+          (if (< (count (:ls estado)) 8)
+            (let [idx-inicio-bucle (inc idx-actual)
+                  nueva-ls (cons [a idx-inicio-bucle] (:ls estado))
+                  nuevo-estado (assoc estado :ds resto-ds :ls nueva-ls)]
+              {:ok (update nuevo-estado :idx inc)})
+            {:error "Pila de ciclos llena"}))
+        {:error "No se encontro ']' correspondiente"}))))
 
 (defn op-fin-ciclo [estado]
+  "Comando ']'."
   (if (empty? (:ls estado))
     {:error "Comando ']' sin un '[' correspondiente"}
     (let [[contador idx-inicio-bucle] (first (:ls estado))
@@ -188,7 +196,6 @@
               nuevo-estado (assoc estado :ls nueva-ls)]
           {:ok (assoc nuevo-estado :idx idx-inicio-bucle)})
         (let [nuevo-estado (assoc estado :ls resto-ls)]
-          {:ok (update nuevo-estado :idx inc)})
-        ))))
+          {:ok (update nuevo-estado :idx inc)})))))
 
 
