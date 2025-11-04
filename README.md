@@ -7,7 +7,7 @@
 
 ## Docentes y Corrector
 - **Docentes:** [Diego Essaya]
-- **Docente Corrector:**
+- **Docente Corrector:** [Leonel Rolon]
 
 ## Integrantes del Grupo
 - **Martino De Ninis [112827]**
