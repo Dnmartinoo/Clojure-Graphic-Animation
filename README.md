@@ -31,4 +31,4 @@ lein run
 ```
 ### Videos:
 - **Agustin: https://youtu.be/17EXVTprgaI**
-- **Martino:** 
+- **Martino:** https://youtu.be/7fGdf1nu11U
