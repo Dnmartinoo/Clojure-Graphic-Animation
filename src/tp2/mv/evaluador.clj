@@ -1,4 +1,9 @@
 (ns tp2.mv.evaluador
+  "Implementa el 'cerebro' evaluador de la Máquina Virtual (MV).
+   'evaluar-pixel' toma un string de codigo y lo ejecuta caracter
+   a caracter usando un loop y un case es el responsable de manejar el
+   ciclo de la ejecucion (inicio, fin y manejo de errores) y de extraer el RGB final"
+
 
   (:require [tp2.mv.estado :as estado]
             [tp2.mv.operaciones :as ops]))
@@ -9,15 +14,17 @@
         [b g r] (take 3 pila)]
     [(or r 0) (or g 0) (or b 0)]))
 
-(defn evaluar-pixel [codigo x y t]
-
+(defn evaluar-pixel
+  "Función pura principal. Evalúa un código de la MV para un píxel (x,y)
+   en un tiempo (t). Devuelve un mapa de resultado:
+   {:ok [R G B]} si la ejecución es exitosa.
+   {:error \"mensaje\"} si la ejecución falla (ej. pila vacía, div por cero)."
+  [codigo x y t]
   (let [resultado-final
         (loop [res {:ok estado/estado-inicial}]
-
           (if (or (:error res)
                   (:ok-final res)
                   (>= (:idx (:ok res)) (count codigo)))
-
             res
             (let [estado-actual (:ok res)
                   idx (:idx estado-actual)
