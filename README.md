@@ -19,11 +19,12 @@ That program is evaluated for each pixel of each animation frame. Its output det
 
 The rendering pipeline can be summarized as follows:
 
-1. The user enters a program.
-2. The program is parsed into an internal representation.
-3. A virtual machine evaluates the program for each pixel.
+1. The user enters a program written in the stack-based language.
+2. The virtual machine reads and evaluates each instruction sequentially.
+3. The program is evaluated independently for every pixel using its coordinates and current frame.
 4. The resulting RGB values are converted into an image.
 5. Generated frames are displayed sequentially as an animation.
+
 
 ## Core Concepts
 
@@ -156,18 +157,26 @@ Update this tree if the final repository uses different namespaces.
 .
 ├── project.clj
 ├── README.md
-├── resources/
 ├── src/
-│   └── tp2_anim/
+│   └── tp2/
 │       ├── core.clj
-│       ├── language/
-│       ├── parser/
-│       ├── vm/
-│       ├── renderer/
-│       ├── scheduler/
-│       └── ui/
+│       ├── eventos/
+│       │   ├── observer.clj
+│       │   └── scheduler.clj
+│       ├── interfaz/
+│       │   └── ventana.clj
+│       ├── mv/
+│       │   ├── estado.clj
+│       │   ├── evaluador.clj
+│       │   ├── operaciones.clj
+│       │   └── saltos.clj
+│       └── runtime/
+│           └── render.clj
 └── test/
-    └── tp2_anim/
+    └── tp2/
+        ├── mv_test.clj
+        ├── render_test.clj
+        └── tabla_pruebas_test.clj
 ```
 
 ## Requirements
@@ -231,7 +240,7 @@ Run the automated test suite with:
 lein test
 ```
 
-The test suite should cover the most important domain behavior, including:
+The automated test suite should cover the most important domain behavior, including:
 
 - Parser validation
 - Individual language operations
