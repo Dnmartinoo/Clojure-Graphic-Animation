@@ -1,6 +1,6 @@
 (defproject tp2-anim "0.1.0-SNAPSHOT"
   :description "TP2 Paradigmas - Animación VM - GUI/Observer/Scheduler"
-  :url "https://example.com/tp2-anim"
+  :url "https://example.com/tp2"
   :license {:name "MIT"}
   :min-lein-version "2.9.8"
   :dependencies [[org.clojure/clojure "1.11.1"]
