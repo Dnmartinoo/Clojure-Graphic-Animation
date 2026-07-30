@@ -101,17 +101,20 @@ The desktop interface allows users to:
 
 The application is organized around several responsibilities.
 
-### Language processing
+### Instruction evaluation
 
-Responsible for converting the source code entered by the user into a representation that can be evaluated by the virtual machine.
+The virtual machine reads the user program sequentially and dispatches each
+character to its corresponding operation.
 
-Depending on the final implementation, this layer may include:
+The evaluator supports:
 
-- Tokenization
-- Parsing
-- Syntax validation
-- Instruction or expression construction
-- Error reporting
+- Pixel coordinates and frame time
+- Stack manipulation
+- Arithmetic and bitwise operations
+- Comparisons
+- Conditional error modes
+- Counted and nested loops
+- Explicit error propagation
 
 ### Virtual machine
 
@@ -240,12 +243,10 @@ Run the automated test suite with:
 lein test
 ```
 
-The automated test suite should cover the most important domain behavior, including:
+The automated test suite covers the most important domain behavior, including:
 
-- Parser validation
 - Individual language operations
 - Virtual machine state transitions
-- RGB value normalization
 - Pixel evaluation
 - Frame generation
 - Invalid program handling
