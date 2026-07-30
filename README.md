@@ -11,17 +11,6 @@ The application produces an animation composed of **256 frames**, with each fram
 
 This project was co-developed by **Martino De Ninis** and **Agustín Sauer** for the Programming Paradigms course at the Faculty of Engineering of the University of Buenos Aires.
 
-<p align="center">
-    <img
-      src="https://img.youtube.com/vi/7fGdf1nu11U/maxresdefault.jpg"
-      alt="Clojure Graphic Animation demo"
-      width="720"
-    >
-  </a>
-</p>
-
-
-
 ## Overview
 
 The application allows users to enter a program written in a small domain-specific language.
